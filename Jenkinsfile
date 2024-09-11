@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+ tools {
+        terraform 'Terraform' // Use the name configured in Global Tool Configuration
+    }
     stages {
         stage('Checkout') {
             steps {

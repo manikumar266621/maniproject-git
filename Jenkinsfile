@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        // Use Jenkins credentials for AWS access
         AWS_ACCESS_KEY_ID = credentials('aws-credentials-id') // Replace with your Jenkins credentials ID
         AWS_SECRET_ACCESS_KEY = credentials('aws-credentials-id') // Replace with your Jenkins credentials ID
     }
@@ -9,68 +10,26 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    try {
-                        checkout scm
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error "Checkout failed: ${e.message}"
-                    }
-                }
+                checkout scm
             }
         }
 
         stage('Terraform Init') {
             steps {
-                script {
-                    try {
-                        sh 'terraform init'
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error "Terraform Init failed: ${e.message}"
-                    }
-                }
+                sh 'terraform init'
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                script {
-                    try {
-                        sh 'terraform plan -out=tfplan'
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error "Terraform Plan failed: ${e.message}"
-                    }
-                }
+                sh 'terraform plan'
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                script {
-                    try {
-                        sh 'terraform apply -auto-approve tfplan'
-                    } catch (Exception e) {
-                        currentBuild.result = 'FAILURE'
-                        error "Terraform Apply failed: ${e.message}"
-                    }
-                }
+                sh 'terraform apply -auto-approve'
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline execution completed.'
-        }
-
-        success {
-            echo 'Pipeline succeeded!'
-        }
-
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }

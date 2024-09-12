@@ -1,8 +1,10 @@
 pipeline {
     agent any
- tools {
-        terraform 'Terraform' // Use the name configured in Global Tool Configuration
+ environment {
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id') // Replace with the Jenkins credentials ID
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key') // Replace with the Jenkins credentials ID
     }
+
     stages {
         stage('Checkout') {
             steps {
